@@ -10,10 +10,11 @@ new Vue({
         'leader-list-component':LeaderListComponent,
     },
     data:{
-    	errors:[],
+        errors:[],
         input:{
             user_name:'',
             user_cards:[],
+            play:true,
         },
         cardlist:[],
         machineCardList:[],
@@ -39,14 +40,16 @@ new Vue({
             if (this.input.user_cards.length==0) {  this.errors.push('Please select any cards'); }
             if(this.errors.length>0) {  return false; }
 
+            this.input.play = false;
             axios.post(`/user`,this.input)
             .then(response => {
-                console.log(this.input.user_name,response);
+                //console.log(this.input.user_name,response);
                 if(response.data.success) {
                     this.user = response.data.user;                   
                     this.machineCardList = response.data.machine_cards;      
                     this.score.user_score = response.data.user_score;             
                     this.score.machine_score = response.data.machine_score;   
+                    this.input.play = true;
                     this.getLeader();        
                 } 
             })
@@ -89,6 +92,7 @@ new Vue({
             ];
             this.errors = [];    
             this.input.user_cards = [];
+            this.input.play = true;
             this.machineCardList=[];
             this.score={};       
         },

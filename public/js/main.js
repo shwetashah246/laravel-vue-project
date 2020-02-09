@@ -2736,7 +2736,7 @@ var render = function() {
             "button",
             {
               staticClass: "btn btn-primary btn-lg",
-              attrs: { type: "submit" }
+              attrs: { type: "submit", disabled: !_vm.input.play }
             },
             [_vm._v("Play")]
           ),
@@ -15118,7 +15118,8 @@ new vue__WEBPACK_IMPORTED_MODULE_2___default.a({
     errors: [],
     input: {
       user_name: '',
-      user_cards: []
+      user_cards: [],
+      play: true
     },
     cardlist: [],
     machineCardList: [],
@@ -15151,14 +15152,15 @@ new vue__WEBPACK_IMPORTED_MODULE_2___default.a({
         return false;
       }
 
+      this.input.play = false;
       axios__WEBPACK_IMPORTED_MODULE_3___default.a.post("/user", this.input).then(function (response) {
-        console.log(_this.input.user_name, response);
-
+        //console.log(this.input.user_name,response);
         if (response.data.success) {
           _this.user = response.data.user;
           _this.machineCardList = response.data.machine_cards;
           _this.score.user_score = response.data.user_score;
           _this.score.machine_score = response.data.machine_score;
+          _this.input.play = true;
 
           _this.getLeader();
         }
@@ -15228,6 +15230,7 @@ new vue__WEBPACK_IMPORTED_MODULE_2___default.a({
       }];
       this.errors = [];
       this.input.user_cards = [];
+      this.input.play = true;
       this.machineCardList = [];
       this.score = {};
     },
@@ -15263,8 +15266,8 @@ new vue__WEBPACK_IMPORTED_MODULE_2___default.a({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\project1\resources\js\main.js */"./resources/js/main.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\project1\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\myjournal\laravel-vue-project\resources\js\main.js */"./resources/js/main.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\myjournal\laravel-vue-project\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

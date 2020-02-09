@@ -56,7 +56,7 @@
                             <div class="p-2">  {{ score.user_score > score.machine_score ? 'Congratulations! you won.' : 'Oops! you lost.' }} </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-lg">Play</button>
+                    <button type="submit" class="btn btn-primary btn-lg" :disabled="!input.play">Play</button>
                     <button type="button" @click="init" v-if="score.user_score" class="btn btn-default btn-lg">Reset</button>
                 </div>
             </div>
