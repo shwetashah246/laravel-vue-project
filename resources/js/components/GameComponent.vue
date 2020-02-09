@@ -53,10 +53,13 @@
                         <div class="d-flex flex-column">
                             <div class="p-2"> Your score : {{ score.user_score }}</div>
                             <div class="p-2"> Machine score : {{ score.machine_score }} </div>
-                            <div class="p-2">  {{ score.user_score > score.machine_score ? 'Congratulations! you won.' : 'Oops! you lost.' }} </div>
+                            <div class="p-2">  {{ score.user_score > score.machine_score ? 'Congratulations! You Won.' : 'Sorry! You Lost.' }} </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-lg" :disabled="!input.play">Play</button>
+                    <button type="submit" class="btn btn-primary btn-lg" :disabled="!input.play">
+                        <span v-if="!input.play" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span v-else class="">Play</span>
+                    </button>
                     <button type="button" @click="init" v-if="score.user_score" class="btn btn-default btn-lg">Reset</button>
                 </div>
             </div>

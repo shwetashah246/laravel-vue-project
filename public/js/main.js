@@ -1974,6 +1974,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: {
     uName: function uName() {
@@ -2722,8 +2725,8 @@ var render = function() {
                       "  " +
                         _vm._s(
                           _vm.score.user_score > _vm.score.machine_score
-                            ? "Congratulations! you won."
-                            : "Oops! you lost."
+                            ? "Congratulations! You Won."
+                            : "Sorry! You Lost."
                         ) +
                         " "
                     )
@@ -2738,7 +2741,14 @@ var render = function() {
               staticClass: "btn btn-primary btn-lg",
               attrs: { type: "submit", disabled: !_vm.input.play }
             },
-            [_vm._v("Play")]
+            [
+              !_vm.input.play
+                ? _c("span", {
+                    staticClass: "spinner-border spinner-border-sm",
+                    attrs: { role: "status", "aria-hidden": "true" }
+                  })
+                : _c("span", {}, [_vm._v("Play")])
+            ]
           ),
           _vm._v(" "),
           _vm.score.user_score

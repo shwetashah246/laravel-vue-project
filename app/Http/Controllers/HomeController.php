@@ -43,7 +43,7 @@ class HomeController extends Controller {
         if ($validator->fails()) { return response()->json(['errors' => $validator->errors()->all()],422); }
 
         try{
-        	$machine_cards = Arr::random($cards,count($request->user_cards));
+        	$machine_cards = Arr::shuffle(Arr::random($cards,count($request->user_cards)));
         	
  			/*$score = array_map(function ($arr1_item,$arr2_item) use ($cardArr) {
         		return [
