@@ -57,7 +57,7 @@ class HomeController extends Controller {
 
 	    	$user_score = $machine_score = 0;
 			foreach($request->user_cards as $key => $v1) {
-				$v2 = @$machine_cards[$key];
+				$v2 = $machine_cards[$key];
 				$user_score += ($cardArr[$v1]>$cardArr[$v2] ? 1 : 0);
 				$machine_score += ($cardArr[$v2]>$cardArr[$v1] ? 1 : 0);
 			}
