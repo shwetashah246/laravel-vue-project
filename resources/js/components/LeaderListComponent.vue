@@ -3,7 +3,12 @@
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">  
             <p class="lead">Leader Board</p>
-            <div class="table-responsive">
+			<div class="d-flex justify-content-center" v-if="loader">
+				<div class="spinner-grow text-primary" role="status">
+					<span class="sr-only">Loading...</span>
+				</div>
+			</div>
+            <div class="table-responsive" v-else>
                 <table class="table">
                     <thead>
                         <tr>
@@ -32,6 +37,7 @@ export default {
     data: function () {
         return {
             leader:[],
+            loader:true,
         };
     },
     mounted(){
@@ -44,11 +50,16 @@ export default {
     },
     methods:{
         getLeader: function () {
+        	this.loader = true;
             axios.post(`/leader`,{})
             .then(response => {
                 if(response.data.success) {
                     this.leader = response.data.leader;         
                 } 
+                this.loader = false;
+            })
+            .catch(e => {
+                this.loader = false;
             });      
         }
     }

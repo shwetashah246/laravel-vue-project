@@ -4,18 +4,22 @@
         <!-- <p class="lead"></p>
         <hr class="my-4"> -->
         <form @submit="checkForm">
-            <p v-if="errors.length" class="error">
+            <p v-if="errors.length" class="error" ref="errorDiv">
                 <ul><li v-for="error in errors">{{ error }}</li></ul>
             </p>
             <div class="row">
-                <div class="col-md-6 col-sm-8 col-xs-6">  
+                <div class="col-md-4 col-sm-8 col-xs-6">  
                     <div class="form-group">
                         <label for="">Enter username</label>
-                        <input type="text" v-model="input.user_name" :maxlength="55" maxlength="55" class="form-control" placeholder="Enter Username">
+                        <input type="text" v-model="input.user_name" :maxlength="55" maxlength="55" class="form-control" placeholder="Enter Username" autofocus="">
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">  
                     <div class="form-group">
                         <label for="">Select cards</label>
-                        <div class="d-flex flex-row">
+                        <div class="d-flex flex-row  flex-wrap">
                             <div class="p-2" v-for="c in cardlist" @click="cardFunc(c)">
                                 <div :class="[c.selected ? 'card text-dark border-danger bg-danger' : 'card text-dark border-info bg-info']"> 
                                     <div class="card-body">
@@ -25,9 +29,13 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">          
                     <div class="form-group" v-if="input.user_cards.length>0">
                         <label>Your cards</label>
-                        <div class="d-flex flex-row">
+                        <div class="d-flex flex-row flex-wrap">
                             <div class="p-2" v-for="c in input.user_cards">
                                 <div class="card text-dark border-success bg-success"> 
                                     <div class="card-body">
@@ -37,9 +45,13 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">  
                     <div class="form-group" v-if="machineCardList.length>0">
                         <label>Machine cards</label>
-                        <div class="d-flex flex-row">
+                        <div class="d-flex flex-row  flex-wrap">
                             <div class="p-2" v-for="c in machineCardList">
                                 <div class="card text-dark border-success bg-success"> 
                                     <div class="card-body">
@@ -49,13 +61,25 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">  
                     <div class="form-group" v-if="score.user_score">
                         <div class="d-flex flex-column">
                             <div class="p-2"> Your score : {{ score.user_score }}</div>
                             <div class="p-2"> Machine score : {{ score.machine_score }} </div>
-                            <div class="p-2">  {{ score.user_score > score.machine_score ? 'Congratulations! You Won.' : 'Sorry! You Lost.' }} </div>
+                            <div class="p-2"> 
+                                <div :class="[score.user_score > score.machine_score ? 'alert alert-success' : 'alert alert-danger']" class="" role="alert">
+                                    {{ score.user_score > score.machine_score ? 'Congratulations! You Won.' : 'Sorry! You Lost.' }}
+                                </div> 
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-8 col-xs-6">  
                     <button type="submit" class="btn btn-primary btn-lg" :disabled="!input.play">
                         <span v-if="!input.play" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         <span v-else class="">Play</span>
@@ -95,6 +119,18 @@ export default {
         this.init();
     },
     props:{
+    },
+    watch: {
+        errors: function() {
+            this.$nextTick(function() {
+                var container = this.$refs.errorDiv;
+                if(container) {
+                    $('html, body').animate({
+                        scrollTop: $(container).offset().top
+                    }, 800);
+                }
+            });
+        },
     },
     methods:{
         checkForm: function (e) {

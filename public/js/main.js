@@ -1979,6 +1979,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "GameComponent",
@@ -2005,6 +2029,19 @@ __webpack_require__.r(__webpack_exports__);
     this.init();
   },
   props: {},
+  watch: {
+    errors: function errors() {
+      this.$nextTick(function () {
+        var container = this.$refs.errorDiv;
+
+        if (container) {
+          $('html, body').animate({
+            scrollTop: $(container).offset().top
+          }, 800);
+        }
+      });
+    }
+  },
   methods: {
     checkForm: function checkForm(e) {
       var _this = this;
@@ -2149,12 +2186,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "GameComponent",
   data: function data() {
     return {
-      leader: []
+      leader: [],
+      loader: true
     };
   },
   mounted: function mounted() {
@@ -2172,10 +2215,15 @@ __webpack_require__.r(__webpack_exports__);
     getLeader: function getLeader() {
       var _this2 = this;
 
+      this.loader = true;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/leader", {}).then(function (response) {
         if (response.data.success) {
           _this2.leader = response.data.leader;
         }
+
+        _this2.loader = false;
+      })["catch"](function (e) {
+        _this2.loader = false;
       });
     }
   }
@@ -2673,7 +2721,7 @@ var render = function() {
     _vm._v(" "),
     _c("form", { on: { submit: _vm.checkForm } }, [
       _vm.errors.length
-        ? _c("p", { staticClass: "error" }, [
+        ? _c("p", { ref: "errorDiv", staticClass: "error" }, [
             _c(
               "ul",
               _vm._l(_vm.errors, function(error) {
@@ -2685,7 +2733,7 @@ var render = function() {
         : _vm._e(),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-6 col-sm-8 col-xs-6" }, [
+        _c("div", { staticClass: "col-md-4 col-sm-8 col-xs-6" }, [
           _c("div", { staticClass: "form-group" }, [
             _c("label", { attrs: { for: "" } }, [_vm._v("Enter username")]),
             _vm._v(" "),
@@ -2703,7 +2751,8 @@ var render = function() {
                 type: "text",
                 maxlength: 55,
                 maxlength: "55",
-                placeholder: "Enter Username"
+                placeholder: "Enter Username",
+                autofocus: ""
               },
               domProps: { value: _vm.input.user_name },
               on: {
@@ -2715,14 +2764,18 @@ var render = function() {
                 }
               }
             })
-          ]),
-          _vm._v(" "),
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-12 col-sm-12 col-xs-12" }, [
           _c("div", { staticClass: "form-group" }, [
             _c("label", { attrs: { for: "" } }, [_vm._v("Select cards")]),
             _vm._v(" "),
             _c(
               "div",
-              { staticClass: "d-flex flex-row" },
+              { staticClass: "d-flex flex-row  flex-wrap" },
               _vm._l(_vm.cardlist, function(c) {
                 return _c(
                   "div",
@@ -2757,15 +2810,19 @@ var render = function() {
               }),
               0
             )
-          ]),
-          _vm._v(" "),
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-12 col-sm-12 col-xs-12" }, [
           _vm.input.user_cards.length > 0
             ? _c("div", { staticClass: "form-group" }, [
                 _c("label", [_vm._v("Your cards")]),
                 _vm._v(" "),
                 _c(
                   "div",
-                  { staticClass: "d-flex flex-row" },
+                  { staticClass: "d-flex flex-row flex-wrap" },
                   _vm._l(_vm.input.user_cards, function(c) {
                     return _c("div", { staticClass: "p-2" }, [
                       _c(
@@ -2787,15 +2844,19 @@ var render = function() {
                   0
                 )
               ])
-            : _vm._e(),
-          _vm._v(" "),
+            : _vm._e()
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-12 col-sm-12 col-xs-12" }, [
           _vm.machineCardList.length > 0
             ? _c("div", { staticClass: "form-group" }, [
                 _c("label", [_vm._v("Machine cards")]),
                 _vm._v(" "),
                 _c(
                   "div",
-                  { staticClass: "d-flex flex-row" },
+                  { staticClass: "d-flex flex-row  flex-wrap" },
                   _vm._l(_vm.machineCardList, function(c) {
                     return _c("div", { staticClass: "p-2" }, [
                       _c(
@@ -2817,8 +2878,12 @@ var render = function() {
                   0
                 )
               ])
-            : _vm._e(),
-          _vm._v(" "),
+            : _vm._e()
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-12 col-sm-12 col-xs-12" }, [
           _vm.score.user_score
             ? _c("div", { staticClass: "form-group" }, [
                 _c("div", { staticClass: "d-flex flex-column" }, [
@@ -2835,20 +2900,37 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "p-2" }, [
-                    _vm._v(
-                      "  " +
-                        _vm._s(
+                    _c(
+                      "div",
+                      {
+                        class: [
                           _vm.score.user_score > _vm.score.machine_score
-                            ? "Congratulations! You Won."
-                            : "Sorry! You Lost."
-                        ) +
-                        " "
+                            ? "alert alert-success"
+                            : "alert alert-danger"
+                        ],
+                        attrs: { role: "alert" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                                " +
+                            _vm._s(
+                              _vm.score.user_score > _vm.score.machine_score
+                                ? "Congratulations! You Won."
+                                : "Sorry! You Lost."
+                            ) +
+                            "\n                            "
+                        )
+                      ]
                     )
                   ])
                 ])
               ])
-            : _vm._e(),
-          _vm._v(" "),
+            : _vm._e()
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-6 col-sm-8 col-xs-6" }, [
           _c(
             "button",
             {
@@ -2907,29 +2989,43 @@ var render = function() {
     _c("div", { staticClass: "col-md-12 col-sm-12 col-xs-12" }, [
       _c("p", { staticClass: "lead" }, [_vm._v("Leader Board")]),
       _vm._v(" "),
-      _c("div", { staticClass: "table-responsive" }, [
-        _c("table", { staticClass: "table" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(_vm.leader, function(o) {
-              return _c("tr", [
-                _c("td", [_vm._v(_vm._s(o.user_name))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(o.total_games))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(o.total_won))])
-              ])
-            }),
-            0
-          )
-        ])
-      ])
+      _vm.loader
+        ? _c("div", { staticClass: "d-flex justify-content-center" }, [
+            _vm._m(0)
+          ])
+        : _c("div", { staticClass: "table-responsive" }, [
+            _c("table", { staticClass: "table" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.leader, function(o) {
+                  return _c("tr", [
+                    _c("td", [_vm._v(_vm._s(o.user_name))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(o.total_games))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(o.total_won))])
+                  ])
+                }),
+                0
+              )
+            ])
+          ])
     ])
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "spinner-grow text-primary", attrs: { role: "status" } },
+      [_c("span", { staticClass: "sr-only" }, [_vm._v("Loading...")])]
+    )
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
