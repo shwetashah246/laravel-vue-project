@@ -23,16 +23,34 @@
             </div>
         </div>
     </div>
-    
 </template>
 
 <script>
+import axios from 'axios'
 export default {
+    name: "GameComponent",
+    data: function () {
+        return {
+            leader:[],
+        };
+    },
+    mounted(){
+        this.getLeader();
+    },
+    created(){
+        Event.$on('getLeader', ()=> this.getLeader() );
+    },
     props:{
-        leader:{
-            type:Array,
-            required:true
-        },
+    },
+    methods:{
+        getLeader: function () {
+            axios.post(`/leader`,{})
+            .then(response => {
+                if(response.data.success) {
+                    this.leader = response.data.leader;         
+                } 
+            });      
+        }
     }
 }
 </script>

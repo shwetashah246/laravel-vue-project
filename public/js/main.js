@@ -1908,6 +1908,8 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -1977,44 +1979,132 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  name: "GameComponent",
+  data: function data() {
+    return {
+      errors: [],
+      input: {
+        user_name: '',
+        user_cards: [],
+        play: true
+      },
+      cardlist: [],
+      machineCardList: [],
+      user: {},
+      score: {}
+    };
+  },
   computed: {
     uName: function uName() {
       return this.input.user_name != '' ? this.input.user_name : 'User';
     }
   },
-  props: {
-    errors: {
-      type: Array,
-      required: true
+  mounted: function mounted() {
+    this.init();
+  },
+  props: {},
+  methods: {
+    checkForm: function checkForm(e) {
+      var _this = this;
+
+      e.preventDefault();
+      this.errors = [];
+
+      if (!this.input.user_name) {
+        this.errors.push('Please provide username.');
+      }
+
+      if (this.input.user_cards.length == 0) {
+        this.errors.push('Please select any cards');
+      }
+
+      if (this.errors.length > 0) {
+        return false;
+      }
+
+      this.input.play = false;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/user", this.input).then(function (response) {
+        //console.log(this.input.user_name,response);
+        if (response.data.success) {
+          _this.user = response.data.user;
+          _this.machineCardList = response.data.machine_cards;
+          _this.score.user_score = response.data.user_score;
+          _this.score.machine_score = response.data.machine_score;
+          _this.input.play = true;
+          Event.$emit('getLeader');
+        }
+      })["catch"](function (e) {
+        if (e.response.data.errors) _this.errors = e.response.data.errors;
+        _this.input.play = true;
+      });
+      return false;
     },
-    input: {
-      type: Object,
-      required: true
+    cardFunc: function cardFunc(o) {
+      o.selected = !o.selected;
+      this.cardlist = this.cardlist.map(function (c) {
+        return c.name === o.name ? o : c;
+      });
+      var index = this.input.user_cards.findIndex(function (c) {
+        return c == o.name;
+      }); //add if not found
+
+      if (index == -1 && o.selected) {
+        this.input.user_cards.push(o.name);
+      } //delete if index found
+
+
+      if (index > -1 && !o.selected) {
+        this.input.user_cards.splice(index, 1);
+      }
     },
-    checkform: {
-      type: Function,
-      required: true
-    },
-    cardlist: {
-      type: Array,
-      required: true
-    },
-    machinecardlist: {
-      type: Array,
-      required: true
-    },
-    cardfunc: {
-      type: Function,
-      required: true
-    },
-    init: {
-      type: Function,
-      required: true
-    },
-    score: {
-      type: Object,
-      required: true
+    init: function init() {
+      this.cardlist = [{
+        name: '2',
+        selected: false
+      }, {
+        name: '3',
+        selected: false
+      }, {
+        name: '4',
+        selected: false
+      }, {
+        name: '5',
+        selected: false
+      }, {
+        name: '6',
+        selected: false
+      }, {
+        name: '7',
+        selected: false
+      }, {
+        name: '8',
+        selected: false
+      }, {
+        name: '9',
+        selected: false
+      }, {
+        name: '10',
+        selected: false
+      }, {
+        name: 'J',
+        selected: false
+      }, {
+        name: 'Q',
+        selected: false
+      }, {
+        name: 'K',
+        selected: false
+      }, {
+        name: 'A',
+        selected: false
+      }];
+      this.errors = [];
+      this.input.user_cards = [];
+      this.input.play = true;
+      this.machineCardList = [];
+      this.score = {};
     }
   }
 });
@@ -2030,6 +2120,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -2057,12 +2149,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    leader: {
-      type: Array,
-      required: true
+  name: "GameComponent",
+  data: function data() {
+    return {
+      leader: []
+    };
+  },
+  mounted: function mounted() {
+    this.getLeader();
+  },
+  created: function created() {
+    var _this = this;
+
+    Event.$on('getLeader', function () {
+      return _this.getLeader();
+    });
+  },
+  props: {},
+  methods: {
+    getLeader: function getLeader() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/leader", {}).then(function (response) {
+        if (response.data.success) {
+          _this2.leader = response.data.leader;
+        }
+      });
     }
   }
 });
@@ -2557,7 +2671,7 @@ var render = function() {
       _vm._v("Hello " + _vm._s(_vm.uName) + "!")
     ]),
     _vm._v(" "),
-    _c("form", { on: { submit: _vm.checkform } }, [
+    _c("form", { on: { submit: _vm.checkForm } }, [
       _vm.errors.length
         ? _c("p", { staticClass: "error" }, [
             _c(
@@ -2616,7 +2730,7 @@ var render = function() {
                     staticClass: "p-2",
                     on: {
                       click: function($event) {
-                        return _vm.cardfunc(c)
+                        return _vm.cardFunc(c)
                       }
                     }
                   },
@@ -2675,14 +2789,14 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.machinecardlist.length > 0
+          _vm.machineCardList.length > 0
             ? _c("div", { staticClass: "form-group" }, [
                 _c("label", [_vm._v("Machine cards")]),
                 _vm._v(" "),
                 _c(
                   "div",
                   { staticClass: "d-flex flex-row" },
-                  _vm._l(_vm.machinecardlist, function(c) {
+                  _vm._l(_vm.machineCardList, function(c) {
                     return _c("div", { staticClass: "p-2" }, [
                       _c(
                         "div",
@@ -15112,149 +15226,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_LeaderListComponent_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/LeaderListComponent.vue */ "./resources/js/components/LeaderListComponent.vue");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
 
 
 
-
+window.Event = new vue__WEBPACK_IMPORTED_MODULE_2___default.a();
 new vue__WEBPACK_IMPORTED_MODULE_2___default.a({
   el: '#vueApp',
   components: {
     'game-component': _components_GameComponent_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     'leader-list-component': _components_LeaderListComponent_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  data: {
-    errors: [],
-    input: {
-      user_name: '',
-      user_cards: [],
-      play: true
-    },
-    cardlist: [],
-    machineCardList: [],
-    user: {},
-    score: {},
-    leader: []
-  },
+  data: {},
   watch: {},
-  mounted: function mounted() {
-    this.init();
-    this.getLeader();
-  },
+  mounted: function mounted() {},
   computed: {},
-  methods: {
-    checkForm: function checkForm(e) {
-      var _this = this;
-
-      e.preventDefault();
-      this.errors = [];
-
-      if (!this.input.user_name) {
-        this.errors.push('Please provide username.');
-      }
-
-      if (this.input.user_cards.length == 0) {
-        this.errors.push('Please select any cards');
-      }
-
-      if (this.errors.length > 0) {
-        return false;
-      }
-
-      this.input.play = false;
-      axios__WEBPACK_IMPORTED_MODULE_3___default.a.post("/user", this.input).then(function (response) {
-        //console.log(this.input.user_name,response);
-        if (response.data.success) {
-          _this.user = response.data.user;
-          _this.machineCardList = response.data.machine_cards;
-          _this.score.user_score = response.data.user_score;
-          _this.score.machine_score = response.data.machine_score;
-          _this.input.play = true;
-
-          _this.getLeader();
-        }
-      })["catch"](function (e) {
-        if (e.response.data.errors) _this.errors = e.response.data.errors;
-        _this.input.play = true;
-      });
-      return false;
-    },
-    cardfunc: function cardfunc(o) {
-      o.selected = !o.selected;
-      this.cardlist = this.cardlist.map(function (c) {
-        return c.name === o.name ? o : c;
-      });
-      var index = this.input.user_cards.findIndex(function (c) {
-        return c == o.name;
-      }); //add if not found
-
-      if (index == -1 && o.selected) {
-        this.input.user_cards.push(o.name);
-      } //delete if index found
-
-
-      if (index > -1 && !o.selected) {
-        this.input.user_cards.splice(index, 1);
-      }
-    },
-    init: function init() {
-      this.cardlist = [{
-        name: '2',
-        selected: false
-      }, {
-        name: '3',
-        selected: false
-      }, {
-        name: '4',
-        selected: false
-      }, {
-        name: '5',
-        selected: false
-      }, {
-        name: '6',
-        selected: false
-      }, {
-        name: '7',
-        selected: false
-      }, {
-        name: '8',
-        selected: false
-      }, {
-        name: '9',
-        selected: false
-      }, {
-        name: '10',
-        selected: false
-      }, {
-        name: 'J',
-        selected: false
-      }, {
-        name: 'Q',
-        selected: false
-      }, {
-        name: 'K',
-        selected: false
-      }, {
-        name: 'A',
-        selected: false
-      }];
-      this.errors = [];
-      this.input.user_cards = [];
-      this.input.play = true;
-      this.machineCardList = [];
-      this.score = {};
-    },
-    getLeader: function getLeader() {
-      var _this2 = this;
-
-      axios__WEBPACK_IMPORTED_MODULE_3___default.a.post("/leader", {}).then(function (response) {
-        if (response.data.success) {
-          _this2.leader = response.data.leader;
-        }
-      });
-    }
-  }
+  methods: {}
 });
 
 /***/ }),
