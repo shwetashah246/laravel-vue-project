@@ -15176,6 +15176,7 @@ new vue__WEBPACK_IMPORTED_MODULE_2___default.a({
         }
       })["catch"](function (e) {
         if (e.response.data.errors) _this.errors = e.response.data.errors;
+        _this.input.play = true;
       });
       return false;
     },

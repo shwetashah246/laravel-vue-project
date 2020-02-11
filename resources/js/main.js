@@ -55,6 +55,7 @@ new Vue({
             })
             .catch(e => {
                 if(e.response.data.errors) this.errors = e.response.data.errors;
+                this.input.play = true;
             })
             return false;
             
